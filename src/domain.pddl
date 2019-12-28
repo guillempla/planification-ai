@@ -16,7 +16,6 @@
     (bookAssignedInMonth ?x ?y)
 	)
 
-
 	(:action assignBook
     :parameters (?x - book ?y - month)
     :precondition (and (not (bookAssigned ?x)) (not (bookRead ?x)))
