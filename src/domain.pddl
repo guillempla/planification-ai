@@ -1,5 +1,5 @@
 (define (domain planner)
-  (:requirements :adl :fluents)
+  (:requirements :adl :fluents :equality)
 
   (:types book month)
 
@@ -9,16 +9,17 @@
   )
 
   (:predicates
-
-    (BOOK ?x)
-    (MONTH ?X)
+    (bookRead ?x)
+    (booksAreParallel ?x ?y)
+    (bookIsPredecessor ?x ?y)
     (bookAssigned ?x)
-    ;;(booksAreParallel ?x ?y)
-    ;;(bookIsPredecessor ?x ?y)
+    (bookAssignedInMonth ?x ?y)
 	)
 
 
 	(:action assignBook
-
+    :parameters (?x - book ?y - month)
+    :precondition (and (not (bookAssigned ?x)) (not (bookRead ?x)))
+    :effect (and (bookAssigned ?x) (bookAssignedInMonth ?x ?y) (increase (monthPages ?y) (bookPages ?x)))
 	)
 )

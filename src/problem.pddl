@@ -20,6 +20,6 @@
     ;; Read books
     (bookRead b0)
   )
-  ;; The goal is:
-  (:goal (forall (?x - book) (bookAssigned ?x)))
+
+  (:goal (forall (?x - book) (not (bookRead ?x)) (bookAssigned ?x)))
 )
