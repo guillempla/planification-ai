@@ -1,25 +1,24 @@
 (define (problem example)
   (:domain planner)
+
   (:objects
     b0 b1 b2 b3 - book
     january february march april may june august september october november december - month
   )
+
   (:init
-    (BOOK b0)
-    (BOOK b1)
-    (BOOK b2)
-    (BOOK b3)
-    (MONTH january)
-    (MONTH february)
-    (MONTH march)
-    (MONTH april)
-    (MONTH may)
-    (MONTH june)
-    (MONTH august)
-    (MONTH september)
-    (MONTH october)
-    (MONTH onovember)
-    (MONTH december) 
+    ;; Pages of each book
+    (= (bookPages b0) 400)
+    (= (bookPages b1) 300)
+    (= (bookPages b2) 200)
+    (= (bookPages b3) 100)
+
+    ;; Predecessors of each book
+    (bookIsPredecessor b0 b1)
+    (bookIsPredecessor b2 b3)
+
+    ;; Read books
+    (bookRead b0)
   )
   ;; The goal is:
   (:goal (forall (?x - book) (bookAssigned ?x)))

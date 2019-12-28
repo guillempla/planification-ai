@@ -4,7 +4,8 @@
   (:types book month)
 
   (:functions
-
+    (bookPages ?x - book)
+    (monthPages ?x - month)
   )
 
   (:predicates
