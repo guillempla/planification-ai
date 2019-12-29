@@ -15,11 +15,18 @@ REQUIRED = [
     '-d',
 ]
 
+EXTENSIONS = [
+    'a',
+    'b',
+    # 'c',
+    'GUARD'
+]
+
 # ============================================================================ #
 
 def error():
     print("[generator]: Error with the arguments.")
-    print("Please, execute the program with '-h' option for more information")
+    print("[generator]: Please, execute the program with '-h' option for more information")
     exit()
 
 def usage():
@@ -71,6 +78,22 @@ def initialize(args):
 
 # ---------------------------------------------------------------------------- #
 
+def getFileName():
+    fileName = "src/"
+    if len(OPTIONS['-o']) == 2:
+        fileName += OPTIONS['-o'][1]
+    else:
+        fileName += "problem"
+        fileName += OPTIONS['-d'][1].upper()
+        for ext in EXTENSIONS:
+            if ext == 'GUARD':
+                print("[generator]: Write operation aborted, all files already generated.")
+                exit()
+            if not isfile(fileName+ext):
+                fileName += ext
+                break
+    return fileName
+
 def generateContent():
     text = """(define (problem yes)
     (:domain planner)
@@ -113,11 +136,13 @@ def writeFile(fileName, text):
 
 def generate():
     print("[generator]: Generating new problem file...")
+    file = getFileName()
     content = generateContent()
-    writeFile("src/hola.pddl", content)
+    writeFile(file, content)
 
 # =================================== MAIN =================================== #
 
 test(argv[:])
 initialize(argv[:])
+print(OPTIONS)
 generate()
