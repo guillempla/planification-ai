@@ -3,18 +3,15 @@
 
   (:types book month)
 
-  (:functions
-    (bookRead ?b - book)
-    (bookCandidate ?b - book)
-  )
-
   (:predicates
+    (bookRead ?b)
+    (bookCandidate ?b)
     (bookAssigned ?m)
     (bookAssignedInMonth ?b ?m)
 	)
 
 	(:action assignBook
-    :parameters (?b - book ?m - month)
+    :parameters (?b ?m)
     :precondition (and (not (bookAssigned ?b)) (not (bookRead ?b)) (bookCandidate ?b))
     :effect (and (bookAssigned ?b) (bookAssignedInMonth ?b ?m))
 	)
