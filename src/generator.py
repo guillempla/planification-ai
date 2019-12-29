@@ -14,7 +14,7 @@ def usage():
     print("")
     print("OPTIONS", "\t", "DESCRIPTION")
     print("-----------------------------")
-    print("-d <num>", "\t", "domain level [b|e1|e2|e3]")
+    print("-d <num>", "\t", "domain level [b|e1|e2|e3] (required)")
     print("-o <str>", "\t", "output file name, if not automatically generated")
     exit()
 
