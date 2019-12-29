@@ -3,6 +3,7 @@ from sys import argv, exit
 OPTIONS = {
     '-b': [1], # number of books
     '-d': [1], # domain level
+    '-h': [0], # help (usage) information
     '-o': [1], # output file
 }
 
@@ -18,10 +19,12 @@ def usage():
     print("---------------------------------------------------------------------------------")
     print("-b <num>", "\t", "yes", "\t\t\t\t", "number of books [>= 0]")
     print("-d <opt>", "\t", "yes", "\t\t\t\t", "domain level [b|e1|e2|e3]")
-    print("-o <str>", "\t", "no", "\t\t\t\t", "output file name, if not automatically generated")
+    print("-h",   "\t\t\t", "no",  "\t\t\t\t", "display help information")
+    print("-o <str>", "\t", "no",  "\t\t\t\t", "output file name, if not automatically generated")
     exit()
 
 def allRequired(args):
+    if '-h' in args: usage()
     for req in REQUIRED:
         if req not in args:
             return False
