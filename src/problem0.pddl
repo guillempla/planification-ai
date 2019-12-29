@@ -9,7 +9,10 @@
   (:init
     ;; Read books
     (bookRead b0)
+    (bookCandidate b1)
+    (bookCandidate b2)
+    (bookCandidate b3)
   )
 
-  (:goal (forall (?b - book) (not (bookRead ?b)) (bookAssigned ?b)))
+  (:goal (forall (?b - book)))
 )
