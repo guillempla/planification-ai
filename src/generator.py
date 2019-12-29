@@ -43,7 +43,9 @@ def classify(args):
             params = OPTIONS[arg][0]
             for j in range(params):
                 OPTIONS[arg].append(args[i+j+1])
-
+    level = OPTIONS["-d"][1]
+    if level != 'b' and level != 'e1' and level != 'e2' and level != 'e3':
+        usage()
 
 # =================================== MAIN =================================== #
 
