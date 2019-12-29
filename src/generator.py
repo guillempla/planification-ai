@@ -114,17 +114,17 @@ def generateContent(fileName, numBooks):
     )
 
     (:init
-        ;; Pages of each book
+        ; Pages of each book
         (= (bookPages b0) 400)
         (= (bookPages b1) 300)
         (= (bookPages b2) 200)
         (= (bookPages b3) 100)
 
-        ;; Predecessors of each book
+        ; Predecessors of each book
         (bookIsPredecessor b0 b1)
         (bookIsPredecessor b2 b3)
 
-        ;; Read books
+        ; Read books
         (bookRead b0)
     )
 
