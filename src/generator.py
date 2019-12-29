@@ -12,6 +12,11 @@ REQUIRED = [
     '-d',
 ]
 
+def error():
+    print("[generator]: Error with the arguments.")
+    print("Please, execute the program with '-h' option for more information")
+    exit()
+
 def usage():
     print("Usage: generator.py [OPTIONS]")
     print("")
@@ -31,15 +36,15 @@ def allRequired(args):
     return True
 
 def test(args):
-    if not allRequired(args): usage()
+    if not allRequired(args): error()
     args.pop(0)
     while len(args) > 0:
         arg = args[0]
-        if arg not in OPTIONS: usage()
+        if arg not in OPTIONS: error()
         params = OPTIONS[arg][0]
         args.pop(0)
         while params > 0:
-            if len(args) == 0: usage()
+            if len(args) == 0: error()
             args.pop(0)
             params -= 1
 
@@ -51,10 +56,13 @@ def classify(args):
                 OPTIONS[arg].append(args[i+j+1])
     level = OPTIONS['-d'][1]
     if level != 'b' and level != 'e1' and level != 'e2' and level != 'e3':
-        usage()
-    books = int(OPTIONS['-b'][1])
-    if books < 0: usage()
-    OPTIONS['-b'][1] = books
+        error()
+    try:
+        books = int(OPTIONS['-b'][1])
+        if books < 0: error()
+        OPTIONS['-b'][1] = books
+    except ValueError:
+        error()
 
 # =================================== MAIN =================================== #
 
