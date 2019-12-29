@@ -1,21 +1,24 @@
 from sys import argv, exit
 
 OPTIONS = {
-    "-d": [1], # domain level
-    "-o": [1], # output file
+    '-b': [1], # number of books
+    '-d': [1], # domain level
+    '-o': [1], # output file
 }
 
 REQUIRED = [
-    "-d",
+    '-b',
+    '-d',
 ]
 
 def usage():
     print("Usage: generator.py [OPTIONS]")
     print("")
-    print("OPTIONS", "\t", "DESCRIPTION")
-    print("-----------------------------")
-    print("-d <num>", "\t", "domain level [b|e1|e2|e3] (required)")
-    print("-o <str>", "\t", "output file name, if not automatically generated")
+    print("OPTIONS", "\t", "REQUIRED", "\t\t", "DESCRIPTION")
+    print("---------------------------------------------------------------------------------")
+    print("-b <num>", "\t", "yes", "\t\t\t\t", "number of books [>= 0]")
+    print("-d <opt>", "\t", "yes", "\t\t\t\t", "domain level [b|e1|e2|e3]")
+    print("-o <str>", "\t", "no", "\t\t\t\t", "output file name, if not automatically generated")
     exit()
 
 def allRequired(args):
@@ -43,9 +46,12 @@ def classify(args):
             params = OPTIONS[arg][0]
             for j in range(params):
                 OPTIONS[arg].append(args[i+j+1])
-    level = OPTIONS["-d"][1]
+    level = OPTIONS['-d'][1]
     if level != 'b' and level != 'e1' and level != 'e2' and level != 'e3':
         usage()
+    books = int(OPTIONS['-b'][1])
+    if books < 0: usage()
+    OPTIONS['-b'][1] = books
 
 # =================================== MAIN =================================== #
 
