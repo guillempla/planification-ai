@@ -1,18 +1,31 @@
 from sys import argv, exit
 
 OPTIONS = {
-    "-o": [1], # output file name
+    "-d": [1], # domain level
+    "-o": [1], # output file
 }
+
+REQUIRED = [
+    "-d",
+]
 
 def usage():
     print("Usage: generator.py [OPTIONS]")
     print("")
     print("OPTIONS", "\t", "DESCRIPTION")
     print("-----------------------------")
-    print("-o <name>", "\t", "output file name, if not automatically generated")
+    print("-d <num>", "\t", "domain level [b|e1|e2|e3]")
+    print("-o <str>", "\t", "output file name, if not automatically generated")
     exit()
 
+def allRequired(args):
+    for req in REQUIRED:
+        if req not in args:
+            return False
+    return True
+
 def test(args):
+    if not allRequired(args): usage()
     args.pop(0)
     while len(args) > 0:
         arg = args[0]
@@ -36,3 +49,4 @@ def classify(args):
 
 test(argv[:])
 classify(argv[:])
+print(OPTIONS)
