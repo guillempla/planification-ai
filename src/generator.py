@@ -89,17 +89,27 @@ def getFileName():
             if ext == 'GUARD':
                 print("[generator]: Write operation aborted, all files already generated.")
                 exit()
-            if not isfile(fileName+ext):
+            if not isfile(fileName+ext+".pddl"):
                 fileName += ext
                 break
-    return fileName
+    return fileName + ".pddl"
 
-def generateContent():
-    text = """(define (problem yes)
+def generateContent(fileName, numBooks):
+    fileName = fileName[4:]
+    fileName = fileName[:-5]
+    if fileName[:7] == "problem":
+        fileName = fileName[7:]
+        if len(fileName) == 0:
+            fileName = '0'
+    books = ""
+    for i in range(numBooks):
+        books += "b" + str(i+1) + " "
+
+    text = """(define (problem """+fileName+""")
     (:domain planner)
 
     (:objects
-        b0 b1 b2 b3 - book
+        """+books+"""- book
         january february march april may june august september october november december - month
     )
 
@@ -136,9 +146,9 @@ def writeFile(fileName, text):
 
 def generate():
     print("[generator]: Generating new problem file...")
-    file = getFileName()
-    content = generateContent()
-    writeFile(file, content)
+    fileName = getFileName()
+    content = generateContent(fileName[:], OPTIONS['-b'][1])
+    writeFile(fileName, content)
 
 # =================================== MAIN =================================== #
 
