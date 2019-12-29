@@ -1,4 +1,7 @@
+from os.path import isfile
 from sys import argv, exit
+
+# ============================================================================ #
 
 OPTIONS = {
     '-b': [1], # number of books
@@ -12,6 +15,8 @@ REQUIRED = [
     '-d',
 ]
 
+# ============================================================================ #
+
 def error():
     print("[generator]: Error with the arguments.")
     print("Please, execute the program with '-h' option for more information")
@@ -21,11 +26,11 @@ def usage():
     print("Usage: generator.py [OPTIONS]")
     print("")
     print("OPTIONS", "\t", "REQUIRED", "\t\t", "DESCRIPTION")
-    print("---------------------------------------------------------------------------------")
+    print("------------------------------------------------------------------------------------")
     print("-b <num>", "\t", "yes", "\t\t\t\t", "number of books [>= 0]")
     print("-d <opt>", "\t", "yes", "\t\t\t\t", "domain level [b|e1|e2|e3]")
     print("-h",   "\t\t\t", "no",  "\t\t\t\t", "display help information")
-    print("-o <str>", "\t", "no",  "\t\t\t\t", "output file name, if not automatically generated")
+    print("-o <str>", "\t", "no",  "\t\t\t\t", "output file name, otherwise automatically generated")
     exit()
 
 def allRequired(args):
@@ -48,7 +53,7 @@ def test(args):
             args.pop(0)
             params -= 1
 
-def classify(args):
+def initialize(args):
     for i, arg in enumerate(args):
         if arg in OPTIONS:
             params = OPTIONS[arg][0]
@@ -64,8 +69,55 @@ def classify(args):
     except ValueError:
         error()
 
+# ---------------------------------------------------------------------------- #
+
+def generateContent():
+    text = """(define (problem yes)
+    (:domain planner)
+
+    (:objects
+        b0 b1 b2 b3 - book
+        january february march april may june august september october november december - month
+    )
+
+    (:init
+        ;; Pages of each book
+        (= (bookPages b0) 400)
+        (= (bookPages b1) 300)
+        (= (bookPages b2) 200)
+        (= (bookPages b3) 100)
+
+        ;; Predecessors of each book
+        (bookIsPredecessor b0 b1)
+        (bookIsPredecessor b2 b3)
+
+        ;; Read books
+        (bookRead b0)
+    )
+
+    (:goal (forall (?x - book) (not (bookRead ?x)) (bookAssigned ?x)))
+)"""
+    return text
+
+def writeFile(fileName, text):
+    if isfile(fileName):
+        while True:
+            overwrite = input("[generator]: The file already exists, do you want to overwrite it? [yes|no]: ")
+            if overwrite == "no":
+                print("[generator]: Write operation aborted!")
+                exit()
+            if overwrite == "yes": break
+    file = open(fileName, "w")
+    file.write(text)
+    file.close()
+
+def generate():
+    print("[generator]: Generating new problem file...")
+    content = generateContent()
+    writeFile("src/hola.pddl", content)
+
 # =================================== MAIN =================================== #
 
 test(argv[:])
-classify(argv[:])
-print(OPTIONS)
+initialize(argv[:])
+generate()
