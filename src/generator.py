@@ -149,10 +149,10 @@ def generate():
     fileName = getFileName()
     content = generateContent(fileName[:], OPTIONS['-b'][1])
     writeFile(fileName, content)
+    print("[generator]: Problem generated successfully!")
 
 # =================================== MAIN =================================== #
 
 test(argv[:])
 initialize(argv[:])
-print(OPTIONS)
 generate()
