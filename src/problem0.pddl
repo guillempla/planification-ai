@@ -8,7 +8,6 @@
 
   (:init
     ;; Read books
-
     (bookCandidate b0)
     (bookCandidate b1)
     (bookCandidate b2)
