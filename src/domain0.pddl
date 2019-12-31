@@ -4,17 +4,17 @@
   (:types book month)
 
   (:predicates
-    (bookRead ?b)
-    (bookCandidate ?b)
-    (bookIsPredecessor ?b1 ?b2)
-    (bookAssigned ?b)
-    (monthCompleted ?m)
-    (bookAssignedInMonth ?b ?m)
+    (bookRead           ?b            - book)
+    (bookCandidate      ?b            - book)
+    (bookIsPredecessor  ?b1 ?b2       - book)
+    (bookAssigned       ?b            - book)
+    (monthCompleted     ?m            - month)
+    (bookAssignedMonth  ?b - book ?m  - month)
 	)
 
-	(:action assignBookPredecessor
-    :parameters (?b ?m)
+	(:action assignBook
+    :parameters (?b - book ?m - month)
     :precondition (and (not (monthCompleted ?m)) (not (bookAssigned ?b)) (not (bookRead ?b))(not (exists (?aux - book) (and (bookIsPredecessor ?aux ?b) (not (bookRead ?aux)) (not (bookAssigned ?aux))))))
-    :effect (and (bookAssigned ?b) (bookAssignedInMonth ?b ?m) (when (exists (?aux - book) (bookIsPredecessor ?b ?aux)) (monthCompleted ?m)))
+    :effect (and (bookAssigned ?b) (bookAssignedMonth ?b ?m) (when (exists (?aux - book) (bookIsPredecessor ?b ?aux)) (monthCompleted ?m)))
 	)
 )
