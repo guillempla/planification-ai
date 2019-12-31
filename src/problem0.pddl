@@ -2,7 +2,7 @@
   (:domain planner)
 
   (:objects
-    b0 b1 b2 b3 - book
+    b0 b1 b2 b3 b4 b5 - book
     january february march april may june august september october november december - month
   )
 
@@ -13,9 +13,17 @@
     ;; Candidate books
     (bookCandidate b1)
     (bookCandidate b2)
-    (bookCandidate b3)
+    (bookCandidate b5)
+
+    ;; Predecessor books
+    (bookIsPredecessor b3 b5)
+    (bookIsPredecessor b4 b5)
 
   )
 
-  (:goal (forall (?b - book) (or (bookRead ?b)(bookAssigned ?b))))
+  (:goal
+    (forall (?b - book)
+      (or (bookRead ?b) (and (bookCandidate ?b) (bookAssigned ?b)) (not (bookCandidate ?b)))
+    )
+  )
 )
