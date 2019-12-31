@@ -8,11 +8,14 @@
 
   (:init
     ;; Read books
-    (bookCandidate b0)
+    (bookRead b0)
+
+    ;; Candidate books
     (bookCandidate b1)
     (bookCandidate b2)
     (bookCandidate b3)
+
   )
 
-  (:goal (forall (?b - book) (bookAssigned ?b)))
+  (:goal (forall (?b - book) (or (bookRead ?b)(bookAssigned ?b))))
 )
