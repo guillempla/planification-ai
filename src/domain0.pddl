@@ -13,7 +13,7 @@
 
 	(:action assignBook
     :parameters (?b ?m)
-    :precondition (and (not (bookAssigned ?b)) (not (bookRead ?b))(not (exists (?aux - book) (and (bookIsPredecessor ?aux ?b) (not (bookAssigned ?aux))))))
+    :precondition (and (not (bookAssigned ?b)) (not (bookRead ?b))(not (exists (?aux - book) (and (bookIsPredecessor ?aux ?b) (not (bookRead ?aux)) (not (bookAssigned ?aux))))))
     :effect (and (bookAssigned ?b) (bookAssignedInMonth ?b ?m))
 	)
 )
