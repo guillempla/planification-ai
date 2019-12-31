@@ -18,6 +18,7 @@
     ;; Predecessor books
     (bookIsPredecessor b0 b3)
     (bookIsPredecessor b3 b5)
+    (bookIsPredecessor b4 b5)
 
   )
 
