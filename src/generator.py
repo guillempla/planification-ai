@@ -32,12 +32,12 @@ def error():
 def usage():
     print("Usage: generator.py [OPTIONS]")
     print("")
-    print("OPTIONS", "\t", "REQUIRED", "\t\t", "DESCRIPTION")
+    print("OPTIONS", "\t", "REQUIRED", "\t", "DESCRIPTION")
     print("------------------------------------------------------------------------------------")
-    print("-b <num>", "\t", "yes", "\t\t\t\t", "number of books [>= 0]")
-    print("-d <opt>", "\t", "yes", "\t\t\t\t", "domain level [b|e1|e2|e3]")
-    print("-h",   "\t\t\t", "no",  "\t\t\t\t", "display help information")
-    print("-o <str>", "\t", "no",  "\t\t\t\t", "output file name, otherwise automatically generated")
+    print("-b <num>", "\t", "yes", "\t\t", "number of books [>= 0]")
+    print("-d <opt>", "\t", "yes", "\t\t", "domain level [b|e1|e2|e3]")
+    print("-h",     "\t\t", "no",  "\t\t", "display help information")
+    print("-o <str>", "\t", "no",  "\t\t", "output file name, otherwise automatically generated")
     exit()
 
 def allRequired(args):
