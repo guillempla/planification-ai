@@ -24,9 +24,9 @@ EXTENSIONS = list(string.ascii_lowercase) + ['GUARD']
 
 # ---------------------------------------------------------------------------- #
 
-PROB_BOOK_READ = 0.15
-PROB_BOOK_CAND = 0.50
-PROB_BOOK_PRED = 0.15
+PROB_BOOK_READ = 0.20
+PROB_BOOK_CAND = 0.35
+PROB_BOOK_PRED = 0.05
 
 # ============================================================================ #
 
@@ -123,6 +123,27 @@ def prevListInverted(ls, i):
     ls = [reverse(split(e)) for e in ls]
     return ls
 
+def initGraph(ls):
+    graph = {}
+    for i in ls:
+        key = int(i[0])
+        graph.setdefault(key, [])
+        graph[key].append(int(i[1]))
+    return graph
+
+def cycle(graph, start, next):
+    if start in next:
+        return True
+    bools = []
+    for n in next:
+        try:
+            ls = graph[n]
+            bools.append(cycle(graph, start, ls))
+        except KeyError:
+            bools.append(cycle(graph, start, []))
+    return any(bools)
+
+
 def randomizeBookRead(numBooks):
     ls = [i for i in range(numBooks)]
     ls = ['b' + str(i) for i in ls if rand.random() <= PROB_BOOK_READ]
@@ -147,6 +168,10 @@ def randomizeBookIsPredecessor(numBooks):
     ls = [str(i) for i in ls if rand.random() <= PROB_BOOK_PRED]
     ls = [i for i in ls if i not in prevListInverted(ls, i)]
     ls = [split(i) for i in ls]
+    graph = initGraph(ls)
+    print(graph)
+    ls = [i for i in ls if not cycle(graph, int(i[0]), graph[int(i[0])])]
+    print(ls)
     txt = ['(bookIsPredecessor b'+str(i[0])+' b'+str(i[1])+')\n\t\t' for i in ls]
     txt = ''.join(txt)
     return txt
