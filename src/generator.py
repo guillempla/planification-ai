@@ -26,7 +26,7 @@ EXTENSIONS = list(string.ascii_lowercase) + ['GUARD']
 
 PROB_BOOK_READ = 0.15
 PROB_BOOK_CAND = 0.50
-PROB_BOOK_PRED = 0.35
+PROB_BOOK_PRED = 0.15
 
 # ============================================================================ #
 
@@ -104,6 +104,25 @@ def getFileName():
                 break
     return fileName + ".pddl"
 
+def crossproduct(ls):
+    cp = []
+    for i in ls:
+        for j in ls:
+            if i != j:
+                cp.append(str(i) + str(j))
+    return cp
+
+def split(str):
+    return [char for char in str]
+
+def reverse(ls):
+    return ls[1] + ls[0]
+
+def prevListInverted(ls, i):
+    ls = ls[:ls.index(i)]
+    ls = [reverse(split(e)) for e in ls]
+    return ls
+
 def randomizeBookRead(numBooks):
     ls = [i for i in range(numBooks)]
     ls = ['b' + str(i) for i in ls if rand.random() <= PROB_BOOK_READ]
@@ -123,7 +142,13 @@ def randomizeBookCandidate(numBooks, booksRead):
     return txt
 
 def randomizeBookIsPredecessor(numBooks):
-    txt = 'HOLA'
+    ls = [i for i in range(numBooks)]
+    ls = crossproduct(ls)
+    ls = [str(i) for i in ls if rand.random() <= PROB_BOOK_PRED]
+    ls = [i for i in ls if i not in prevListInverted(ls, i)]
+    ls = [split(i) for i in ls]
+    txt = ['(bookIsPredecessor b'+str(i[0])+' b'+str(i[1])+')\n\t\t' for i in ls]
+    txt = ''.join(txt)
     return txt
 
 def generateContent(fileName, numBooks, numMonths):
@@ -142,7 +167,7 @@ def generateContent(fileName, numBooks, numMonths):
 
     booksRead = randomizeBookRead(numBooks)
     booksCandidate = randomizeBookCandidate(numBooks, booksRead[:])
-    booksPredecessors = randomizeBookIsPredecessor(numBooks)
+    booksPredecessor = randomizeBookIsPredecessor(numBooks)
 
     text = """(define (problem """+fileName+""")
     (:domain planner)
@@ -158,7 +183,7 @@ def generateContent(fileName, numBooks, numMonths):
         ; Candidate books
         """+booksCandidate+"""
         ; Predecessor books
-        """+booksPredecessors+"""
+        """+booksPredecessor+"""
     )
 
     (:goal (forall (?x - book) (not (bookRead ?x)) (bookAssigned ?x)))
