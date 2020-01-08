@@ -1,3 +1,6 @@
+import random as rand
+import string
+
 from os.path import isfile
 from sys import argv, exit
 
@@ -7,20 +10,23 @@ OPTIONS = {
     '-b': [1], # number of books
     '-d': [1], # domain level
     '-h': [0], # help (usage) information
+    '-m': [1], # number of months
     '-o': [1], # output file
 }
 
 REQUIRED = [
     '-b',
     '-d',
+    '-m',
 ]
 
-EXTENSIONS = [
-    'a',
-    'b',
-    # 'c',
-    'GUARD'
-]
+EXTENSIONS = list(string.ascii_lowercase) + ['GUARD']
+
+# ---------------------------------------------------------------------------- #
+
+PROB_BOOK_READ = 0.15
+PROB_BOOK_CAND = 0.50
+PROB_BOOK_PRED = 0.35
 
 # ============================================================================ #
 
@@ -30,13 +36,14 @@ def error():
     exit()
 
 def usage():
-    print("Usage: generator.py [OPTIONS]")
+    print("Usage: generator.py [OPTIONS] (execute it from the project folder root)")
     print("")
     print("OPTIONS", "\t", "REQUIRED", "\t", "DESCRIPTION")
     print("------------------------------------------------------------------------------------")
-    print("-b <num>", "\t", "yes", "\t\t", "number of books [>= 0]")
+    print("-b <num>", "\t", "yes", "\t\t", "number of books [> 0]")
     print("-d <opt>", "\t", "yes", "\t\t", "domain level [b|e1|e2|e3]")
     print("-h",     "\t\t", "no",  "\t\t", "display help information")
+    print("-m",     "\t\t", "yes", "\t\t", "number of months [> 0]")
     print("-o <str>", "\t", "no",  "\t\t", "output file name, otherwise automatically generated")
     exit()
 
@@ -71,8 +78,11 @@ def initialize(args):
         error()
     try:
         books = int(OPTIONS['-b'][1])
-        if books < 0: error()
+        if books < 1: error()
         OPTIONS['-b'][1] = books
+        months = int(OPTIONS['-m'][1])
+        if months < 1: error()
+        OPTIONS['-m'][1] = months
     except ValueError:
         error()
 
@@ -94,7 +104,29 @@ def getFileName():
                 break
     return fileName + ".pddl"
 
-def generateContent(fileName, numBooks):
+def randomizeBookRead(numBooks):
+    ls = [i for i in range(numBooks)]
+    ls = ['b' + str(i) for i in ls if rand.random() <= PROB_BOOK_READ]
+    ls = ['(bookRead ' + i + ')\n\t\t' for i in ls]
+    txt = ''.join(ls)
+    return txt
+
+def randomizeBookCandidate(numBooks, booksRead):
+    read = booksRead.split('\n\t\t')
+    read = read[:-1]
+    read = [i.split(' ')[1][:-1] for i in read]
+    ls = [i for i in range(numBooks)]
+    ls = ['b' + str(i) for i in ls if rand.random() <= PROB_BOOK_CAND]
+    ls = [i for i in ls if i not in read]
+    ls = ['(bookCandidate ' + i + ')\n\t\t' for i in ls]
+    txt = ''.join(ls)
+    return txt
+
+def randomizeBookIsPredecessor(numBooks):
+    txt = 'HOLA'
+    return txt
+
+def generateContent(fileName, numBooks, numMonths):
     fileName = fileName[4:]
     fileName = fileName[:-5]
     if fileName[:7] == "problem":
@@ -103,29 +135,30 @@ def generateContent(fileName, numBooks):
             fileName = '0'
     books = ""
     for i in range(numBooks):
-        books += "b" + str(i+1) + " "
+        books += "b" + str(i) + " "
+    months = ""
+    for i in range(numMonths):
+        months += "m" + str(i) + " "
+
+    booksRead = randomizeBookRead(numBooks)
+    booksCandidate = randomizeBookCandidate(numBooks, booksRead[:])
+    booksPredecessors = randomizeBookIsPredecessor(numBooks)
 
     text = """(define (problem """+fileName+""")
     (:domain planner)
 
     (:objects
         """+books+"""- book
-        january february march april may june august september october november december - month
+        """+months+"""- month
     )
 
     (:init
-        ; Pages of each book
-        (= (bookPages b0) 400)
-        (= (bookPages b1) 300)
-        (= (bookPages b2) 200)
-        (= (bookPages b3) 100)
-
-        ; Predecessors of each book
-        (bookIsPredecessor b0 b1)
-        (bookIsPredecessor b2 b3)
-
         ; Read books
-        (bookRead b0)
+        """+booksRead+"""
+        ; Candidate books
+        """+booksCandidate+"""
+        ; Predecessor books
+        """+booksPredecessors+"""
     )
 
     (:goal (forall (?x - book) (not (bookRead ?x)) (bookAssigned ?x)))
@@ -147,7 +180,7 @@ def writeFile(fileName, text):
 def generate():
     print("[generator]: Generating new problem file...")
     fileName = getFileName()
-    content = generateContent(fileName[:], OPTIONS['-b'][1])
+    content = generateContent(fileName[:], OPTIONS['-b'][1], OPTIONS['-m'][1])
     writeFile(fileName, content)
     print("[generator]: Problem generated successfully!")
 
