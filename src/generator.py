@@ -26,7 +26,8 @@ EXTENSIONS = list(string.ascii_lowercase) + ['GUARD']
 
 PROB_BOOK_READ = 0.20
 PROB_BOOK_CAND = 0.35
-PROB_BOOK_PRED = 0.05
+PROB_BOOK_PRED = 0.03
+PROB_BOOK_PARA = 0.02
 
 # ============================================================================ #
 
@@ -169,10 +170,21 @@ def randomizeBookIsPredecessor(numBooks):
     ls = [i for i in ls if i not in prevListInverted(ls, i)]
     ls = [split(i) for i in ls]
     graph = initGraph(ls)
-    print(graph)
     ls = [i for i in ls if not cycle(graph, int(i[0]), graph[int(i[0])])]
-    print(ls)
     txt = ['(bookIsPredecessor b'+str(i[0])+' b'+str(i[1])+')\n\t\t' for i in ls]
+    txt = ''.join(txt)
+    return txt
+
+def randomizeBooksAreParallel(numBooks):
+    mult = 1.00
+    if OPTIONS['-d'][1] == 'b':
+        mult = 0.00
+    ls = [i for i in range(numBooks)]
+    ls = crossproduct(ls)
+    ls = [str(i) for i in ls if rand.random() <= PROB_BOOK_PARA * mult]
+    ls = [i for i in ls if i not in prevListInverted(ls, i)]
+    ls = [split(i) for i in ls]
+    txt = ['(booksAreParallel b'+str(i[0])+' b'+str(i[1])+')\n\t\t' for i in ls]
     txt = ''.join(txt)
     return txt
 
@@ -193,6 +205,7 @@ def generateContent(fileName, numBooks, numMonths):
     booksRead = randomizeBookRead(numBooks)
     booksCandidate = randomizeBookCandidate(numBooks, booksRead[:])
     booksPredecessor = randomizeBookIsPredecessor(numBooks)
+    booksParallel = randomizeBooksAreParallel(numBooks)
 
     text = """(define (problem """+fileName+""")
     (:domain planner)
@@ -209,6 +222,8 @@ def generateContent(fileName, numBooks, numMonths):
         """+booksCandidate+"""
         ; Predecessor books
         """+booksPredecessor+"""
+        ; Parallel books
+        """+booksParallel+"""
     )
 
     (:goal (forall (?x - book) (not (bookRead ?x)) (bookAssigned ?x)))
