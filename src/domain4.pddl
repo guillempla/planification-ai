@@ -28,7 +28,7 @@
 
     :effect (and (bookAssigned ?b) (bookAssignedMonth ?b ?m)
             (when (exists (?aux - book) (bookIsPredecessor ?b ?aux)) (monthCompleted ?m))
-            ;; (increase (monthPages ?m) (bookPages ?b))
+            (increase (monthPages ?m) (bookPages ?b))
 	           )
    )
 )

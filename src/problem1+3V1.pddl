@@ -8,7 +8,6 @@
 
   (:init
     ;; Read books
-    (bookRead b0)
 
     ;; Candidate books
     (bookCandidate b1)
@@ -19,8 +18,6 @@
 
 
     ;; Predecessor books
-    (bookIsPredecessor b2 b1)
-    (bookIsPredecessor b5 b3)
 
     ;; Pages of each book
     (= (bookPages b0) 400)
